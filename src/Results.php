@@ -41,7 +41,18 @@ class Results
     {
         $this->responseObject = $response;
         $this->responseBody   = $this->responseObject->getBody()->getContents();
-        $this->results        = json_decode($this->responseBody, $asArray);
+        try {
+            $this->results        = json_decode($this->responseBody, $asArray, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            $this->reformatResults(true);
+            throw new QueryError([
+                'errors' => [
+                    [
+                        'message' => $e->getMessage()
+                    ]
+                ]
+            ], $response);
+        }
 
         // Check if any errors exist, and throw exception if they do
         if ($asArray) $containsErrors = array_key_exists('errors', $this->results);

@@ -2,6 +2,7 @@
 
 namespace GraphQL\Exception;
 
+use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 
 /**
@@ -13,27 +14,22 @@ use RuntimeException;
  */
 class QueryError extends RuntimeException
 {
-    /**
-     * @var array
-     */
-    protected $errorDetails;
+    protected array $errorDetails;
 
-    /**
-     * QueryError constructor.
-     *
-     * @param array $errorDetails
-     */
-    public function __construct($errorDetails)
+    protected ?ResponseInterface $response;
+
+    public function __construct(array $errorDetails, ?ResponseInterface $response = null)
     {
         $this->errorDetails = $errorDetails['errors'][0];
+        $this->response = $response;
         parent::__construct($this->errorDetails['message']);
     }
 
-    /**
-     * @return array
-     */
-    public function getErrorDetails()
-    {
+    public function getErrorDetails(): array {
         return $this->errorDetails;
+    }
+
+    public function getResponse(): ?ResponseInterface {
+        return $this->response;
     }
 }
