@@ -48,7 +48,11 @@ class Results
             throw new QueryError([
                 'errors' => [
                     [
-                        'message' => $e->getMessage()
+                        'message' => sprintf(
+                            'Error decoding Response: %s (%s)',
+                            $e->getMessage(),
+                            substr($response->getBody()->getContents(), 0, 500)
+                        )
                     ]
                 ]
             ], $response);
