@@ -49,8 +49,9 @@ class Results
                 'errors' => [
                     [
                         'message' => sprintf(
-                            'Error decoding Response: %s (%s)',
+                            'Error decoding Response: %s (%d / %s)',
                             $e->getMessage(),
+                            $response->getStatusCode(),
                             substr($response->getBody()->getContents(), 0, 500)
                         )
                     ]
